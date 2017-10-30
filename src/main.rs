@@ -153,6 +153,11 @@ fn on_suite(cfg: &Configuration, suite: &str) -> Result<()> {
     run_tester(cfg, suite, "ast", "")?;
     run_tester(cfg, suite, "mir", "-Z borrowck-mir")?;
 
+    let mut ignore = String::new();
+    let ignore_path = cfg.blessed_dir.join("IGNORE");
+    fs::File::open(ignore_path)?.read_to_string(&mut ignore)?;
+    let ignore: Vec<_> = ignore.split('\n').collect();
+
     for file in fs::read_dir(cfg.target_dir(suite, "ast"))? {
         let file = file?;
         let filename = file.file_name();
@@ -162,6 +167,13 @@ fn on_suite(cfg: &Configuration, suite: &str) -> Result<()> {
         };
         if !filename.ends_with(".err") {
             continue
+        }
+        if ignore.iter().any(|ign| filename == *ign) {
+            info!("ignoring test {:?}", filename);
+            continue
+        }
+        if filename.ends_with(".mir.err") {
+            info!("skipping MIR test {:?}", filename);
         }
         info!("comparing test {:?}", filename);
 
@@ -210,5 +222,6 @@ fn run() -> Result<i32> {
     fs::File::open("nll-probe.toml")?.read_to_string(&mut cfg)?;
     let cfg: Configuration = toml::from_str(&cfg)?;
     on_suite(&cfg, "run-pass")?;
+    on_suite(&cfg, "compile-fail")?;
     Ok((0))
 }

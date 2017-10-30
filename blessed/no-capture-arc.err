@@ -1,0 +1,36 @@
+error[E0382]: use of moved value: `arc_v` (Ast)
+  --> /home/ariel/Rust/rust-emergency/src/test/compile-fail/no-capture-arc.rs:24:18
+   |
+20 |     thread::spawn(move|| {
+   |                   ------ value moved (into closure) here
+...
+24 |     assert_eq!((*arc_v)[2], 3);
+   |                  ^^^^^ value used here after move
+   |
+   = note: move occurs because `arc_v` has type `std::sync::Arc<std::vec::Vec<i32>>`, which does not implement the `Copy` trait
+
+error[E0382]: use of moved value: `arc_v` (Ast)
+  --> /home/ariel/Rust/rust-emergency/src/test/compile-fail/no-capture-arc.rs:26:23
+   |
+20 |     thread::spawn(move|| {
+   |                   ------ value moved (into closure) here
+...
+26 |     println!("{:?}", *arc_v);
+   |                       ^^^^^ value used here after move
+   |
+   = note: move occurs because `arc_v` has type `std::sync::Arc<std::vec::Vec<i32>>`, which does not implement the `Copy` trait
+
+error[E0381]: borrow of possibly uninitialized variable: `arc_v` (Mir)
+  --> /home/ariel/Rust/rust-emergency/src/test/compile-fail/no-capture-arc.rs:24:18
+   |
+24 |     assert_eq!((*arc_v)[2], 3);
+   |                  ^^^^^ use of possibly uninitialized `arc_v`
+
+error[E0381]: borrow of possibly uninitialized variable: `arc_v` (Mir)
+  --> /home/ariel/Rust/rust-emergency/src/test/compile-fail/no-capture-arc.rs:26:23
+   |
+26 |     println!("{:?}", *arc_v);
+   |                       ^^^^^ use of possibly uninitialized `arc_v`
+
+error: aborting due to 4 previous errors
+

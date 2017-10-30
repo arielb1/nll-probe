@@ -1,0 +1,31 @@
+<unassigned>: issue-17954 - SOUNDNESS: no error
+44837: issue-41726 - SOUNDNESS: permission checking
+45638: E0501 - weird error message
+<unassigned>: augmented-assignments - SOUNDNESS: missing "cannot borrow immutable local variable `y` as mutable"
+<unassigned>: slice-mut-2 - SOUNDNESS: no error
+44837: E0017 - SOUNDNESS: permission checking - statics
+44837: issue-5500-1 - SOUNDNESS: permission checking
+<unassigned>: issue-10398 - ICE: End-user description not implemented for field access on `TyClosure
+44837: issue-21600 - SOUNDNESS: permission checking
+<unassigned>: issue-12127 - ICE: End-user description not implemented for field access on `TyClosure
+<unassigned>: static-mut-foreign-requires-unsafe - permission checking - statics
+44837: issue-19163 - SOUNDNESS: permission checking
+<unassigned>: issue-24267-flow-exit - COMPLETENESS: spurious "re-assignment of immutable variable" in loop
+<unassigned>: move-out-of-array-1 - ICE: src/librustc_mir/util/borrowck_errors.rs:274: this path should not cause illegal move
+44837: E0596 - SOUNDNESS: permission checking
+<unassigned>: issue-17263 - SOUNDNESS: multiple borrows of Box
+44837: unboxed-closures-mutate-upvar - SOUNDNESS: permission checking (in closure)
+<unassigned>: vec-mut-iter-borrow - COMPLETENESS: spurious "re-assignment of immutable variable" in loop
+<unassigned>: drop-with-active-borrows-1 - COMPLETENESS: spurious "re-assignment of immutable variable" in loop
+<unassigned>: liveness-move-in-while - COMPLETENESS: spurious "re-assignment of immutable variable" in loop
+44837: mutable-class-field-2 - SOUNDNESS: permission checkingc
+<unassigned>: move-out-of-slice-1 - ICE: src/librustc_mir/util/borrowck_errors.rs:274: this path should not cause illegal move
+
+diagnostics:
+parens (45185) - coerce-overloaded-autoderef
+uninitiaized ~ moved out of (45363)
+does not live long enough ~ assign (45360)
+
+unassigned:
+<unassigned>: closure may outlive the current function, but it borrows `y`, which is owned by the current function ~ cannot assign to `y` because it is borrowed (regions-nested-fns-2)
+<unassigned>: cannot move out of borrowed_content ~ cannot move out of borrowed content / cannot move out of dereference of raw pointer (issue-20801)

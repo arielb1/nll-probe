@@ -1,0 +1,6 @@
+svh-change-trait-bound.err
+nolink-with-link-args.err
+svh-change-type-static.err
+issue-10755.err
+svh-use-trait.err
+svh-change-type-arg.err
