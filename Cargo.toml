@@ -1,0 +1,6 @@
+[package]
+name = "nll-probe"
+version = "0.1.0"
+authors = ["Ariel Ben-Yehuda <ariel.byd@gmail.com>"]
+
+[dependencies]
