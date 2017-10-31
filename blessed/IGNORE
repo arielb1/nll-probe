@@ -4,3 +4,8 @@ svh-change-type-static.err
 issue-10755.err
 svh-use-trait.err
 svh-change-type-arg.err
+svh-change-significant-cfg.err
+crateresolve1.err
+svh-change-type-ret.err
+svh-change-lit.err
+changing-crates.err

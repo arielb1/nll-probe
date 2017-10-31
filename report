@@ -1,25 +1,51 @@
-<unassigned>: issue-17954 - SOUNDNESS: no error
-44837: issue-41726 - SOUNDNESS: permission checking
+〈unassigned〉: issue-17954 - SOUNDNESS: no error
 45638: E0501 - weird error message
-<unassigned>: augmented-assignments - SOUNDNESS: missing "cannot borrow immutable local variable `y` as mutable"
-<unassigned>: slice-mut-2 - SOUNDNESS: no error
+〈unassigned〉: slice-mut-2 - SOUNDNESS: no error
+45643: issue-10398 - ICE: End-user description not implemented for field access on `TyClosure
+45643: issue-12127 - ICE: End-user description not implemented for field access on `TyClosure
+45641: static-mut-foreign-requires-unsafe - permission checking - statics
+45641: static-mut-requires-unsafe - permission checking - statics
+〈unassigned〉: move-out-of-array-1 - ICE: src/librustc_mir/util/borrowck_errors.rs:274: this path should not cause illegal move
+〈unassigned〉: issue-17263 - SOUNDNESS: multiple borrows of Box
+〈unassigned〉: move-out-of-slice-1 - ICE: src/librustc_mir/util/borrowck_errors.rs:274: this path should not cause illegal move
+45643: issue-12041 - ICE: End-user description not implemented for field access on `TyClosure
+45643: cannot-mutate-captured-non-mut-var - ICE: End-user description not implemented for field access on `TyClosure
+〈unassigned〉: region-borrow-params-issue-29793-big - weird closure unsoundness
+〈unassigned〉: region-borrow-params-issue-29793-small - weird closure unsoundness
+〈unassigned〉: issue-4335 - weird closure unsoundness
+〈unassigned〉: E0508 - ICE: src/librustc_mir/util/borrowck_errors.rs:274: this path should not cause illegal move
+〈unassigned〉: issue-25579 - ICE: end region not found for ReFree
+〈unassigned〉: regions-addr-of-arg - SOUNDNESS: no error
+〈unassigned〉: asm-out-read-uninit - COMPLETENESS: asm not marked as initializing
+
+Permission checking (issue 44837):
+44837: augmented-assignments - SOUNDNESS: permission checking
 44837: E0017 - SOUNDNESS: permission checking - statics
 44837: issue-5500-1 - SOUNDNESS: permission checking
-<unassigned>: issue-10398 - ICE: End-user description not implemented for field access on `TyClosure
 44837: issue-21600 - SOUNDNESS: permission checking
-<unassigned>: issue-12127 - ICE: End-user description not implemented for field access on `TyClosure
-<unassigned>: static-mut-foreign-requires-unsafe - permission checking - statics
 44837: issue-19163 - SOUNDNESS: permission checking
-<unassigned>: issue-24267-flow-exit - COMPLETENESS: spurious "re-assignment of immutable variable" in loop
-<unassigned>: move-out-of-array-1 - ICE: src/librustc_mir/util/borrowck_errors.rs:274: this path should not cause illegal move
 44837: E0596 - SOUNDNESS: permission checking
-<unassigned>: issue-17263 - SOUNDNESS: multiple borrows of Box
 44837: unboxed-closures-mutate-upvar - SOUNDNESS: permission checking (in closure)
-<unassigned>: vec-mut-iter-borrow - COMPLETENESS: spurious "re-assignment of immutable variable" in loop
-<unassigned>: drop-with-active-borrows-1 - COMPLETENESS: spurious "re-assignment of immutable variable" in loop
-<unassigned>: liveness-move-in-while - COMPLETENESS: spurious "re-assignment of immutable variable" in loop
-44837: mutable-class-field-2 - SOUNDNESS: permission checkingc
-<unassigned>: move-out-of-slice-1 - ICE: src/librustc_mir/util/borrowck_errors.rs:274: this path should not cause illegal move
+44837: mutable-class-field-2 - SOUNDNESS: permission checking
+44837: unboxed-closures-mutated-upvar-from-fn-closure SOUNDNESS: permission checking (in closure)
+44837+45642: issue-41726 - permission checking + reassignment
+44837: issue-33819 - SOUNDNESS: permission checking
+44837: mut-suggestion - SOUNDNESS: permission checking
+44837: E0389 - SOUNDNESS: permission checking
+44837: unboxed-closures-infer-fnmut-missing-mut - SOUNDNESS: permission checking
+44837: borrow-immutable-upvar-mutation - SOUNDNESS: permission checking
+44837: unboxed-closure-immutable-capture - SOUNDNESS: permission checking
+44837: unboxed-closures-infer-fnmut-move-missing-mut - SOUNDNESS: permission checking
+44837: E0388 - SOUNDNESS: permission checking
+44837: writing-to-immutable-vec - SOUNDNESS: permission checking
+
+Spurious reborrow in a loop (issue 45642):
+45642: issue-24267-flow-exit - COMPLETENESS: spurious "re-assignment of immutable variable" in loop
+45642: vec-mut-iter-borrow - COMPLETENESS: spurious "re-assignment of immutable variable" in loop
+45642: drop-with-active-borrows-1 - COMPLETENESS: spurious "re-assignment of immutable variable" in loop
+45642: liveness-move-in-while - COMPLETENESS: spurious "re-assignment of immutable variable" in loop
+45642: issue-40288 - COMPLETENESS: spurious "re-assignment of immutable variable" in loop
+
 
 diagnostics:
 parens (45185) - coerce-overloaded-autoderef
@@ -27,5 +53,6 @@ uninitiaized ~ moved out of (45363)
 does not live long enough ~ assign (45360)
 
 unassigned:
-<unassigned>: closure may outlive the current function, but it borrows `y`, which is owned by the current function ~ cannot assign to `y` because it is borrowed (regions-nested-fns-2)
-<unassigned>: cannot move out of borrowed_content ~ cannot move out of borrowed content / cannot move out of dereference of raw pointer (issue-20801)
+〈unassigned〉: closure may outlive the current function, but it borrows `y`, which is owned by the current function ~ cannot assign to `y` because it is borrowed (regions-nested-fns-2)
+〈unassigned〉: cannot move out of borrowed_content ~ cannot move out of borrowed content / cannot move out of dereference of raw pointer (issue-20801)
+〈unassigned〉: cannot move out of borrowed_content ~ cannot move out of captured outer variable in an `FnMut` closure 

@@ -142,7 +142,7 @@ fn run_tester(cfg: &Configuration,
         }).collect()
     }).collect::<Result<Vec<String>>>()?;
 
-    let status = Command::new(&args[0]).args(&args[1..]).status()?;
+    let status = Command::new(&args[0]).args(&args[1..]).env_remove("RUST_LOG").status()?;
     info!("running tests in configuration {:?} {:?} - status={:?}",
           suite, kind, status);
     Ok(())
@@ -174,6 +174,7 @@ fn on_suite(cfg: &Configuration, suite: &str) -> Result<()> {
         }
         if filename.ends_with(".mir.err") {
             info!("skipping MIR test {:?}", filename);
+            continue
         }
         info!("comparing test {:?}", filename);
 
@@ -221,7 +222,7 @@ fn run() -> Result<i32> {
     let mut cfg = String::new();
     fs::File::open("nll-probe.toml")?.read_to_string(&mut cfg)?;
     let cfg: Configuration = toml::from_str(&cfg)?;
-    on_suite(&cfg, "run-pass")?;
+//    on_suite(&cfg, "run-pass")?;
     on_suite(&cfg, "compile-fail")?;
     Ok((0))
 }
