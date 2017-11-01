@@ -7,11 +7,12 @@ extern crate env_logger;
 extern crate serde;
 extern crate toml;
 extern crate fmt_macros;
+extern crate walkdir;
 
 use std::fs;
 use std::io::{self, Read};
 use std::process::Command;
-use std::path::PathBuf;
+use std::path::{PathBuf};
 
 pub const COMPILETEST_COMMAND: &[&str] = &[
     "{BUILDROOT}/{HOST}/stage0-tools/x86_64-unknown-linux-gnu/release/compiletest",
@@ -75,6 +76,8 @@ mod errors {
             Io(::std::io::Error);
             Var(::std::env::VarError);
             Toml(::toml::de::Error);
+            StripPrefix(::std::path::StripPrefixError);
+            WalkDir(::walkdir::Error);
         }
     }
 }
@@ -84,7 +87,7 @@ use errors::*;
 quick_main!(run);
 
 #[derive(Clone, Deserialize)]
-struct Configuration {
+pub struct Configuration {
     python: PathBuf,
     rust_buildroot: PathBuf,
     rust_srcroot: PathBuf,
@@ -107,10 +110,10 @@ fn cvpath(p: &PathBuf) -> Result<String> {
     }
 }
 
-fn run_tester(cfg: &Configuration,
-              suite: &str,
-              kind: &str,
-              extra_flags: &str) -> Result<()> {
+pub fn run_tester(cfg: &Configuration,
+                  suite: &str,
+                  kind: &str,
+                  extra_flags: &str) -> Result<()> {
     info!("running tests in configuration {:?} {:?} {:?}", suite, kind, extra_flags);
     let args = COMPILETEST_COMMAND.iter().map(|c| {
         let parser = fmt_macros::Parser::new(c);
@@ -165,7 +168,7 @@ impl TestResult {
         use TestResult::*;
         match self {
             Ignored => "I",
-            NoChange => "N",
+            NoChange => "J",
             NoOutput => "X",
             NoExpected => "U",
             Modified => "M",
@@ -244,20 +247,26 @@ fn check_test(cfg: &Configuration,
 }
 
 fn on_suite(cfg: &Configuration, suite: &str) -> Result<()> {
-    run_tester(cfg, suite, "ast", "")?;
-    run_tester(cfg, suite, "mir", "-Z borrowck-mir")?;
+//    run_tester(cfg, suite, "ast", "")?;
+//    run_tester(cfg, suite, "mir", "-Z borrowck-mir")?;
 
     let mut ignore = String::new();
     let ignore_path = cfg.datadir.join("IGNORE");
     fs::File::open(ignore_path)?.read_to_string(&mut ignore)?;
     let ignore: Vec<_> = ignore.split('\n').collect();
 
-    for file in fs::read_dir(cfg.target_dir(suite, "ast"))? {
-        let file = file?;
-        let filename = file.file_name();
-        let filename = match filename.into_string() {
-            Ok(s) => s,
-            Err(_) => continue
+    let mut walkdir = walkdir::WalkDir::new(cfg.target_dir(suite, "ast")).into_iter();
+    let root = walkdir.next().expect("no root in walkdir")?;
+    let files : Result<Vec<_>> = walkdir.map(|w| {
+        Ok::<_, Error>(w?.path().strip_prefix(root.path())?.to_owned())
+    }).collect();
+    let mut files = files?;
+    files.sort();
+
+    for filename in files {
+        let filename = match filename.to_str() {
+            Some(s) => s,
+            None => continue
         };
         let test_result = check_test(cfg, suite, &ignore, &filename)?;
         if let Some(result) = test_result {
