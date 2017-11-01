@@ -157,6 +157,7 @@ enum TestResult {
     NoExpected,
     Modified,
     ExpectedSuccess,
+    ExpectedFailure,
 }
 
 impl TestResult {
@@ -169,6 +170,7 @@ impl TestResult {
             NoExpected => "U",
             Modified => "M",
             ExpectedSuccess => "S",
+            ExpectedFailure => "F",
         }
     }
 }
@@ -224,6 +226,15 @@ fn check_test(cfg: &Configuration,
     if let Some(blessed) = read_file(blessed_path)? {
         if mir_result == blessed {
             return Ok(Some(TestResult::ExpectedSuccess));
+        } else {
+            return Ok(Some(TestResult::Modified));
+        }
+    }
+
+    let cursed_path = cfg.datadir.join("known-bad").join(&filename);
+    if let Some(cursed) = read_file(cursed_path)? {
+        if mir_result == cursed {
+            return Ok(Some(TestResult::ExpectedFailure));
         } else {
             return Ok(Some(TestResult::Modified));
         }

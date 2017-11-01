@@ -1,0 +1,12 @@
+{"message":"cannot assign to immutable captured outer variable in an `FnOnce` closure `x` (Ast)","code":{"code":"E0594","explanation":null},"level":"error","spans":[{"file_name":"/home/ariel/Rust/rust-emergency/src/test/compile-fail/cannot-mutate-captured-non-mut-var.rs","byte_start":616,"byte_end":621,"line_start":19,"line_end":19,"column_start":25,"column_end":30,"is_primary":true,"text":[{"text":"    to_fn_once(move|| { x = 2; });","highlight_start":25,"highlight_end":30}],"label":null,"suggested_replacement":null,"expansion":null}],"children":[],"rendered":null}
+{"message":"cannot borrow immutable captured outer variable in an `FnOnce` closure `s` as mutable (Ast)","code":{"code":"E0596","explanation":"\nThis error occurs because you tried to mutably borrow a non-mutable variable.\n\nExample of erroneous code:\n\n```compile_fail,E0596\nlet x = 1;\nlet y = &mut x; // error: cannot borrow mutably\n```\n\nIn here, `x` isn't mutable, so when we try to mutably borrow it in `y`, it\nfails. To fix this error, you need to make `x` mutable:\n\n```\nlet mut x = 1;\nlet y = &mut x; // ok!\n```\n"},"level":"error","spans":[{"file_name":"/home/ariel/Rust/rust-emergency/src/test/compile-fail/cannot-mutate-captured-non-mut-var.rs","byte_start":749,"byte_end":750,"line_start":23,"line_end":23,"column_start":25,"column_end":26,"is_primary":true,"text":[{"text":"    to_fn_once(move|| { s.read_to_end(&mut Vec::new()); });","highlight_start":25,"highlight_end":26}],"label":null,"suggested_replacement":null,"expansion":null}],"children":[],"rendered":null}
+{"message":"/home/ariel/Rust/rust-emergency/src/librustc_mir/borrow_check.rs:1300: End-user description not implemented for field access on `TyClosure(DefId { krate: CrateNum(0), index: DefIndex(1:11) => cannot_mutate_captured_non_mut_var[317d]::main[0]::{{closure}}[0] }, ClosureSubsts { substs: Slice([i32]) })`","code":null,"level":"error: internal compiler error","spans":[],"children":[],"rendered":null}
+note: the compiler unexpectedly panicked. this is a bug.
+
+note: we would appreciate a bug report: https://github.com/rust-lang/rust/blob/master/CONTRIBUTING.md#bug-reports
+
+note: rustc 1.23.0-dev running on x86_64-unknown-linux-gnu
+
+thread 'rustc' panicked at 'Box<Any>', /home/ariel/Rust/rust-emergency/src/librustc_errors/lib.rs:503:8
+note: Run with `RUST_BACKTRACE=1` for a backtrace.
+
