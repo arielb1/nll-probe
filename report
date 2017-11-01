@@ -8,8 +8,10 @@
 〈unassigned〉: move-out-of-array-1 - ICE: src/librustc_mir/util/borrowck_errors.rs:274: this path should not cause illegal move
 〈unassigned〉: issue-17263 - SOUNDNESS: multiple borrows of Box
 〈unassigned〉: move-out-of-slice-1 - ICE: src/librustc_mir/util/borrowck_errors.rs:274: this path should not cause illegal move
+45643: borrowck/borrowck-multiple-captures - ICE: End-user description not implemented for field access on `TyClosure
 45643: issue-12041 - ICE: End-user description not implemented for field access on `TyClosure
 45643: cannot-mutate-captured-non-mut-var - ICE: End-user description not implemented for field access on `TyClosure
+45643: borrowck/borrowck-closures-unique-imm - ICE: End-user description not implemented for field access on `TyClosure
 〈unassigned〉: region-borrow-params-issue-29793-big - weird closure unsoundness
 〈unassigned〉: region-borrow-params-issue-29793-small - weird closure unsoundness
 〈unassigned〉: issue-4335 - weird closure unsoundness
@@ -17,6 +19,13 @@
 〈unassigned〉: issue-25579 - ICE: end region not found for ReFree
 〈unassigned〉: regions-addr-of-arg - SOUNDNESS: no error
 〈unassigned〉: asm-out-read-uninit - COMPLETENESS: asm not marked as initializing
+〈unassigned〉: borrowck/borrowck-borrow-from-owned-ptr - SOUNDNESS: isn't stupid enough with Box
+〈unassigned〉: borrowck/borrowck-box-insensitivity - SOUNDNESS: isn't stupid enough with Box
+〈unassigned〉: borrowck/borrowck-for-loop-head-linkage - rustc_mir::borrow_check::MirBorrowckCtxt::mutate_lvalue@620, unwrap failure
+〈unassigned〉: borrowck/borrowck-lend-flow-loop - rustc_mir::borrow_check::MirBorrowckCtxt::mutate_lvalue@620, unwrap failure
+〈unassigned〉: borrowck/borrowck-mut-borrow-linear-errors -ICE: end region not found for ReScope
+〈unassigned〉: borrowck/borrowck-vec-pattern-nesting - SOUNDNESS: missing "cannot assign to `vec[..]` because it is borrowed "
+〈unassigned〉: borrowck/borrowck-vec-pattern-move-tail - SOUNDNESS: missing "cannot assign to `vec[..]` because it is borrowed "
 
 Permission checking (issue 44837):
 44837: augmented-assignments - SOUNDNESS: permission checking
@@ -38,6 +47,25 @@ Permission checking (issue 44837):
 44837: unboxed-closures-infer-fnmut-move-missing-mut - SOUNDNESS: permission checking
 44837: E0388 - SOUNDNESS: permission checking
 44837: writing-to-immutable-vec - SOUNDNESS: permission checking
+44837: borrowck/borrowck-argument - SOUNDNESS: permission checking
+44837: borrowck/borrowck-assign-to-andmut-in-borrowed-loc - SOUNDNESS: permission checking
+44837: borrowck/borrowck-auto-mut-ref-to-immut-var
+44837: borrowck/borrowck-borrow-from-stack-variable (last test "borrow_mut_from_imm")
+44837: borrowck/borrowck-borrow-immut-deref-of-box-as-mut - SOUNDNESS: permission checking
+44837: borrowck/borrowck-borrow-mut-base-ptr-in-aliasable-loc
+borrowck/borrowck-assign-to-andmut-in-aliasable-loc
+borrowck/borrowck-borrow-from-stack-variable
+borrowck/borrowck-borrow-immut-deref-of-box-as-mut
+borrowck/borrowck-borrow-overloaded-auto-deref
+borrowck/borrowck-borrow-overloaded-deref
+borrowck/borrowck-closures-mut-of-imm
+borrowck/borrowck-closures-unique
+borrowck/borrowck-mut-addr-of-imm-var
+borrowck/borrowck-mut-slice-of-imm-vec
+borrowck/borrowck-overloaded-call
+borrowck/borrowck-reborrow-from-mut
+borrowck/borrowck-ref-mut-of-imm
+borrowck/borrowck-unboxed-closures
 
 Spurious reborrow in a loop (issue 45642):
 45642: issue-24267-flow-exit - COMPLETENESS: spurious "re-assignment of immutable variable" in loop
@@ -45,14 +73,25 @@ Spurious reborrow in a loop (issue 45642):
 45642: drop-with-active-borrows-1 - COMPLETENESS: spurious "re-assignment of immutable variable" in loop
 45642: liveness-move-in-while - COMPLETENESS: spurious "re-assignment of immutable variable" in loop
 45642: issue-40288 - COMPLETENESS: spurious "re-assignment of immutable variable" in loop
+45642: borrowck/borrowck-for-loop-correct-cmt-for-pattern
+borrowck/borrowck-insert-during-each
 
+Unions:
+borrowck/borrowck-union-borrow-nested
+borrowck/borrowck-union-move-assign
+borrowck/borrowck-union-move
+borrowck/borrowck-union-uninitialized
+union/union-borrow-move-parent-sibling
 
 diagnostics:
 parens (45185) - coerce-overloaded-autoderef
 uninitiaized ~ moved out of (45363)
 does not live long enough ~ assign (45360)
-
-unassigned:
+[borrowck/borrowck-assign-to-andmut-in-borrowed-loc] duplicate error message from Replace (〈unassigned〉)
+[data/known-good/borrowck-lend-flow-if] because `v` is also borrowed as immutable ~ because it is also borrowed as immutable
+[borrowck/borrowck-move-error-with-note]: patterns - MIR blames each binding, but we want to blame the match and *note* the bindings
 〈unassigned〉: closure may outlive the current function, but it borrows `y`, which is owned by the current function ~ cannot assign to `y` because it is borrowed (regions-nested-fns-2)
-〈unassigned〉: cannot move out of borrowed_content ~ cannot move out of borrowed content / cannot move out of dereference of raw pointer (issue-20801)
+[issue-20801] 〈unassigned〉: cannot move out of borrowed_content ~ cannot move out of borrowed content / cannot move out of dereference of raw pointer
 〈unassigned〉: cannot move out of borrowed_content ~ cannot move out of captured outer variable in an `FnMut` closure 
+[borrowck/borrowck-move-out-of-vec-tail] test hits an entirely different error, test should switch to using a box pattern
+[borrowck/borrowck-vec-pattern-element-loan] duplicate error message for DropAndReplace aka assignment, need to fix
