@@ -90,7 +90,7 @@ struct Configuration {
     rust_srcroot: PathBuf,
     host: String,
     cachedir: PathBuf,
-    blessed_dir: PathBuf,
+    datadir: PathBuf,
 }
 
 impl Configuration {
@@ -149,12 +149,95 @@ fn run_tester(cfg: &Configuration,
 
 }
 
+#[derive(Debug, Copy, Clone)]
+enum TestResult {
+    Ignored,
+    NoChange,
+    NoOutput,
+    NoExpected,
+    Modified,
+    ExpectedSuccess,
+}
+
+impl TestResult {
+    fn code(self) -> &'static str {
+        use TestResult::*;
+        match self {
+            Ignored => "I",
+            NoChange => "N",
+            NoOutput => "X",
+            NoExpected => "U",
+            Modified => "M",
+            ExpectedSuccess => "S",
+        }
+    }
+}
+
+fn read_file(path: PathBuf) -> Result<Option<String>> {
+    let mut buf = String::new();
+    match fs::File::open(path) {
+        Ok(mut f) => {
+            f.read_to_string(&mut buf)?;
+            Ok(Some(buf))
+        }
+        Err(ref e) if e.kind() == io::ErrorKind::NotFound => {
+            Ok(None)
+        }
+        Err(e) => Err(From::from(e))
+    }
+}
+
+fn check_test(cfg: &Configuration,
+              suite: &str,
+              ignore: &[&str],
+              filename: &str)
+              -> Result<Option<TestResult>>
+{
+    if !filename.ends_with(".err") {
+        return Ok(None);
+    }
+    if filename.ends_with(".mir.err") {
+        info!("skipping MIR test {:?}", filename);
+        return Ok(None);
+    }
+    if ignore.iter().any(|ign| filename == *ign) {
+        info!("ignoring test {:?}", filename);
+        return Ok(Some(TestResult::Ignored));
+    }
+    info!("comparing test {:?}", filename);
+
+    let ast_path = cfg.target_dir(suite, "ast").join(&filename);
+    let mut ast_result = String::new();
+    fs::File::open(ast_path)?.read_to_string(&mut ast_result)?;
+
+    let mir_result = cfg.target_dir(suite, "mir").join(&filename);
+    let mir_result = match read_file(mir_result)? {
+        Some(result) => result,
+        None => return Ok(Some(TestResult::NoOutput))
+    };
+
+    if ast_result == mir_result {
+        return Ok(Some(TestResult::NoChange));
+    }
+
+    let blessed_path = cfg.datadir.join("known-good").join(&filename);
+    if let Some(blessed) = read_file(blessed_path)? {
+        if mir_result == blessed {
+            return Ok(Some(TestResult::ExpectedSuccess));
+        } else {
+            return Ok(Some(TestResult::Modified));
+        }
+    }
+
+    Ok(Some(TestResult::NoExpected))
+}
+
 fn on_suite(cfg: &Configuration, suite: &str) -> Result<()> {
     run_tester(cfg, suite, "ast", "")?;
     run_tester(cfg, suite, "mir", "-Z borrowck-mir")?;
 
     let mut ignore = String::new();
-    let ignore_path = cfg.blessed_dir.join("IGNORE");
+    let ignore_path = cfg.datadir.join("IGNORE");
     fs::File::open(ignore_path)?.read_to_string(&mut ignore)?;
     let ignore: Vec<_> = ignore.split('\n').collect();
 
@@ -165,53 +248,9 @@ fn on_suite(cfg: &Configuration, suite: &str) -> Result<()> {
             Ok(s) => s,
             Err(_) => continue
         };
-        if !filename.ends_with(".err") {
-            continue
-        }
-        if ignore.iter().any(|ign| filename == *ign) {
-            info!("ignoring test {:?}", filename);
-            continue
-        }
-        if filename.ends_with(".mir.err") {
-            info!("skipping MIR test {:?}", filename);
-            continue
-        }
-        info!("comparing test {:?}", filename);
-
-        let mut ast_result = String::new();
-        fs::File::open(file.path())?.read_to_string(&mut ast_result)?;
-
-        let mut mir_result = String::new();
-        let mir_path = cfg.target_dir(suite, "mir").join(&filename);
-        let mut mir_file = match fs::File::open(mir_path) {
-            Ok(f) => f,
-            Err(ref e) if e.kind() == io::ErrorKind::NotFound => {
-                // file was not compiled due to other errors
-                println!("X {}/{}", suite, filename);
-                continue
-            }
-            Err(e) => return Err(From::from(e)),
-        };
-        mir_file.read_to_string(&mut mir_result)?;
-
-        if ast_result != mir_result {
-            let blessed_path = cfg.blessed_dir.join(&filename);
-            match fs::File::open(blessed_path) {
-                Ok(mut f) => {
-                    let mut blessed_result = String::new();
-                    f.read_to_string(&mut blessed_result)?;
-                    if mir_result != blessed_result {
-                        println!("R {}/{}", suite, filename);
-                        continue
-                    }
-                }
-                Err(ref e) if e.kind() == io::ErrorKind::NotFound => {
-                    // file is not blessed
-                    println!("E {}/{}", suite, filename);
-                    continue
-                }
-                Err(e) => return Err(From::from(e)),
-            }
+        let test_result = check_test(cfg, suite, &ignore, &filename)?;
+        if let Some(result) = test_result {
+            println!("{} {}/{}", result.code(), suite, filename);
         }
     }
     Ok(())
