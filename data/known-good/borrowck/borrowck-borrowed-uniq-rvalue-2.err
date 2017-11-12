@@ -1,5 +1,5 @@
 error[E0597]: borrowed value does not live long enough (Ast)
-  --> /home/ariel/Rust/rust-emergency/src/test/compile-fail/borrowck/borrowck-borrowed-uniq-rvalue-2.rs:32:46
+  --> /home/ariel/Rust/rust-master/src/test/compile-fail/borrowck/borrowck-borrowed-uniq-rvalue-2.rs:32:46
    |
 32 |     let x = defer(&vec!["Goodbye", "world!"]);
    |                    ------------------------- ^ temporary value dropped here while still borrowed
@@ -13,7 +13,7 @@ error[E0597]: borrowed value does not live long enough (Ast)
    = note: this error originates in a macro outside of the current crate
 
 error[E0505]: cannot move out of `_` because it is borrowed (Mir)
-  --> /home/ariel/Rust/rust-emergency/src/test/compile-fail/borrowck/borrowck-borrowed-uniq-rvalue-2.rs:32:47
+  --> /home/ariel/Rust/rust-master/src/test/compile-fail/borrowck/borrowck-borrowed-uniq-rvalue-2.rs:32:47
    |
 32 |     let x = defer(&vec!["Goodbye", "world!"]);
    |                   --------------------------  ^ move out of `_` occurs here
@@ -21,7 +21,7 @@ error[E0505]: cannot move out of `_` because it is borrowed (Mir)
    |                   borrow of `_` occurs here
 
 error[E0506]: cannot assign to `_` because it is borrowed (Mir)
-  --> /home/ariel/Rust/rust-emergency/src/test/compile-fail/borrowck/borrowck-borrowed-uniq-rvalue-2.rs:32:47
+  --> /home/ariel/Rust/rust-master/src/test/compile-fail/borrowck/borrowck-borrowed-uniq-rvalue-2.rs:32:47
    |
 32 |     let x = defer(&vec!["Goodbye", "world!"]);
    |                   --------------------------  ^ assignment to borrowed `_` occurs here

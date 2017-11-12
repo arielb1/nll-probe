@@ -1,6 +1,6 @@
 python='/usr/bin/python'
-rust_buildroot='/home/ariel/Rust/rust-emergency/build-debug-assertions/build'
-rust_srcroot='/home/ariel/Rust/rust-emergency'
+rust_buildroot='/home/ariel/Rust/rust-master/build-debug-assertions/build'
+rust_srcroot='/home/ariel/Rust/rust-master'
 host='x86_64-unknown-linux-gnu'
 cachedir='/home/ariel/Rust/nll-probe/cache'
 datadir='/home/ariel/Rust/nll-probe/data'
