@@ -247,8 +247,8 @@ fn check_test(cfg: &Configuration,
 }
 
 fn on_suite(cfg: &Configuration, suite: &str) -> Result<()> {
-//    run_tester(cfg, suite, "ast", "")?;
-//    run_tester(cfg, suite, "mir", "-Z borrowck-mir")?;
+    run_tester(cfg, suite, "ast", "")?;
+    run_tester(cfg, suite, "mir", "-Z borrowck-mir")?;
 
     let mut ignore = String::new();
     let ignore_path = cfg.datadir.join("IGNORE");
