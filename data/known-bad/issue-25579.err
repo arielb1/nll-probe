@@ -11,6 +11,6 @@ note: we would appreciate a bug report: https://github.com/rust-lang/rust/blob/m
 
 note: rustc 1.23.0-dev running on x86_64-unknown-linux-gnu
 
-thread 'rustc' panicked at 'end region not found for ReFree(DefId { krate: CrateNum(0), index: DefIndex(0:4) => issue_25579[317d]::causes_ice[0] }, BrAnon(0))', /home/ariel/Rust/rust-master/src/librustc_mir/dataflow/impls/borrows.rs:121:8
+thread 'rustc' panicked at 'end region not found for ReFree(DefId { krate: CrateNum(0), index: DefIndex(0:4) => issue_25579[317d]::causes_ice[0] }, BrAnon(0))', /home/ariel/Rust/rust-master/src/librustc_mir/dataflow/impls/borrows.rs:131:8
 note: Run with `RUST_BACKTRACE=1` for a backtrace.
 
