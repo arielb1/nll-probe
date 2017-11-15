@@ -1,1 +1,1 @@
-sed -rn 's@^M compile-fail/(.*).err\1@p'
+sed -rn 's@^M compile-fail/(.*).err@\1@p'

@@ -1,11 +1,112 @@
 {"message":"cannot borrow `this.x` as mutable because it is also borrowed as immutable (Ast)","code":{"code":"E0502","explanation":"\nThis error indicates that you are trying to borrow a variable as mutable when it\nhas already been borrowed as immutable.\n\nExample of erroneous code:\n\n```compile_fail,E0502\nfn bar(x: &mut i32) {}\nfn foo(a: &mut i32) {\n    let ref y = a; // a is borrowed as immutable.\n    bar(a); // error: cannot borrow `*a` as mutable because `a` is also borrowed\n            //        as immutable\n}\n```\n\nTo fix this error, ensure that you don't have any other references to the\nvariable before trying to access it mutably:\n\n```\nfn bar(x: &mut i32) {}\nfn foo(a: &mut i32) {\n    bar(a);\n    let ref y = a; // ok!\n}\n```\n\nFor more information on the rust ownership system, take a look at\nhttps://doc.rust-lang.org/stable/book/references-and-borrowing.html.\n"},"level":"error","spans":[{"file_name":"/home/ariel/Rust/rust-master/src/test/compile-fail/borrowck/borrowck-closures-unique-imm.rs","byte_start":623,"byte_end":629,"line_start":21,"line_end":21,"column_start":14,"column_end":20,"is_primary":true,"text":[{"text":"        &mut this.x; //~ ERROR cannot borrow","highlight_start":14,"highlight_end":20}],"label":"mutable borrow occurs here","suggested_replacement":null,"expansion":null},{"file_name":"/home/ariel/Rust/rust-master/src/test/compile-fail/borrowck/borrowck-closures-unique-imm.rs","byte_start":602,"byte_end":608,"line_start":20,"line_end":20,"column_start":18,"column_end":24,"is_primary":false,"text":[{"text":"        let p = &this.x;","highlight_start":18,"highlight_end":24}],"label":"immutable borrow occurs here","suggested_replacement":null,"expansion":null},{"file_name":"/home/ariel/Rust/rust-master/src/test/compile-fail/borrowck/borrowck-closures-unique-imm.rs","byte_start":659,"byte_end":660,"line_start":22,"line_end":22,"column_start":5,"column_end":6,"is_primary":false,"text":[{"text":"    };","highlight_start":5,"highlight_end":6}],"label":"immutable borrow ends here","suggested_replacement":null,"expansion":null}],"children":[],"rendered":null}
-{"message":"/home/ariel/Rust/rust-master/src/librustc_mir/borrow_check.rs:1460: End-user description not implemented for field access on `TyClosure(DefId { krate: CrateNum(0), index: DefIndex(1:10) => borrowck_closures_unique_imm[317d]::main[0]::{{closure}}[0] }, ClosureSubsts { substs: Slice([&mut &mut Foo]) })`","code":null,"level":"error: internal compiler error","spans":[],"children":[],"rendered":null}
+{"message":"/home/ariel/Rust/rust-master/src/librustc_mir/borrow_check.rs:1607: End-user description not implemented for field access on `TyClosure(DefId { krate: CrateNum(0), index: DefIndex(1:10) => borrowck_closures_unique_imm[317d]::main[0]::{{closure}}[0] }, ClosureSubsts { substs: Slice([&mut &mut Foo]) })`","code":null,"level":"error: internal compiler error","spans":[],"children":[],"rendered":null}
 note: the compiler unexpectedly panicked. this is a bug.
 
 note: we would appreciate a bug report: https://github.com/rust-lang/rust/blob/master/CONTRIBUTING.md#bug-reports
 
 note: rustc 1.23.0-dev running on x86_64-unknown-linux-gnu
 
+note: run with `RUST_BACKTRACE=1` for a backtrace
+
 thread 'rustc' panicked at 'Box<Any>', /home/ariel/Rust/rust-master/src/librustc_errors/lib.rs:485:8
-note: Run with `RUST_BACKTRACE=1` for a backtrace.
+note: Some details are omitted, run with `RUST_BACKTRACE=full` for a verbose backtrace.
+stack backtrace:
+   0: std::sys::imp::backtrace::tracing::imp::unwind_backtrace
+             at /home/ariel/Rust/rust-master/src/libstd/sys/unix/backtrace/tracing/gcc_s.rs:49
+   1: std::sys_common::backtrace::_print
+             at /home/ariel/Rust/rust-master/src/libstd/sys_common/backtrace.rs:68
+   2: std::panicking::default_hook::{{closure}}
+             at /home/ariel/Rust/rust-master/src/libstd/sys_common/backtrace.rs:57
+             at /home/ariel/Rust/rust-master/src/libstd/panicking.rs:381
+   3: std::panicking::default_hook
+             at /home/ariel/Rust/rust-master/src/libstd/panicking.rs:391
+   4: std::panicking::rust_panic_with_hook
+             at /home/ariel/Rust/rust-master/src/libstd/panicking.rs:577
+   5: std::panicking::begin_panic
+             at /home/ariel/Rust/rust-master/src/libstd/panicking.rs:538
+   6: rustc_errors::Handler::bug
+             at /home/ariel/Rust/rust-master/src/librustc_errors/lib.rs:485
+   7: rustc::session::opt_span_bug_fmt::{{closure}}
+             at /home/ariel/Rust/rust-master/src/librustc/session/mod.rs:992
+   8: rustc::session::opt_span_bug_fmt
+             at /home/ariel/Rust/rust-master/src/librustc/ty/context.rs:0
+   9: rustc::session::bug_fmt
+             at /home/ariel/Rust/rust-master/src/librustc/session/mod.rs:972
+  10: rustc_mir::borrow_check::MirBorrowckCtxt::describe_field_from_ty
+             at /home/ariel/Rust/rust-master/src/librustc_mir/borrow_check.rs:1607
+  11: rustc_mir::borrow_check::MirBorrowckCtxt::describe_field_from_ty
+             at /home/ariel/Rust/rust-master/src/librustc_mir/borrow_check.rs:0
+  12: rustc_mir::borrow_check::MirBorrowckCtxt::describe_field
+             at /home/ariel/Rust/rust-master/src/librustc_mir/borrow_check.rs:0
+  13: rustc_mir::borrow_check::MirBorrowckCtxt::describe_field
+             at /home/ariel/Rust/rust-master/src/librustc_mir/borrow_check.rs:1565
+  14: rustc_mir::borrow_check::MirBorrowckCtxt::append_lvalue_to_string
+             at /home/ariel/Rust/rust-master/src/librustc_mir/borrow_check.rs:1515
+  15: rustc_mir::borrow_check::MirBorrowckCtxt::append_lvalue_to_string
+             at /home/ariel/Rust/rust-master/src/librustc_mir/borrow_check.rs:1530
+  16: rustc_mir::borrow_check::MirBorrowckCtxt::append_lvalue_to_string
+             at /home/ariel/Rust/rust-master/src/librustc_mir/borrow_check.rs:1530
+  17: rustc_mir::borrow_check::MirBorrowckCtxt::append_lvalue_to_string
+             at /home/ariel/Rust/rust-master/src/librustc_mir/borrow_check.rs:1530
+  18: rustc_mir::borrow_check::MirBorrowckCtxt::report_conflicting_borrow
+             at /home/ariel/Rust/rust-master/src/librustc_mir/borrow_check.rs:1488
+             at /home/ariel/Rust/rust-master/src/librustc_mir/borrow_check.rs:1402
+  19: rustc_mir::borrow_check::MirBorrowckCtxt::access_lvalue::{{closure}}
+             at /home/ariel/Rust/rust-master/src/libcore/ptr.rs:0
+  20: rustc_mir::borrow_check::MirBorrowckCtxt::access_lvalue
+             at /home/ariel/Rust/rust-master/src/librustc_mir/borrow_check.rs:1047
+             at /home/ariel/Rust/rust-master/src/librustc_mir/borrow_check.rs:452
+  21: <rustc_mir::borrow_check::MirBorrowckCtxt<'c, 'b, 'a, 'gcx, 'tcx> as rustc_mir::dataflow::DataflowResultsConsumer<'b, 'tcx>>::visit_statement_entry
+             at /home/ariel/Rust/rust-master/src/librustc_mir/borrow_check.rs:533
+             at /home/ariel/Rust/rust-master/src/librustc_mir/borrow_check.rs:245
+  22: rustc_mir::borrow_check::do_mir_borrowck
+             at /home/ariel/Rust/rust-master/src/librustc_mir/dataflow/mod.rs:309
+             at /home/ariel/Rust/rust-master/src/librustc_mir/dataflow/mod.rs:299
+             at /home/ariel/Rust/rust-master/src/librustc_mir/borrow_check.rs:147
+  23: rustc_mir::borrow_check::mir_borrowck
+             at /home/ariel/Rust/rust-master/src/librustc_mir/borrow_check.rs:64
+             at /home/ariel/Rust/rust-master/src/librustc/infer/mod.rs:375
+             at /home/ariel/Rust/rust-master/src/librustc/ty/context.rs:1522
+             at /home/ariel/Rust/rust-master/src/libstd/thread/local.rs:377
+             at /home/ariel/Rust/rust-master/src/libstd/thread/local.rs:288
+             at /home/ariel/Rust/rust-master/src/librustc/ty/context.rs:1519
+             at /home/ariel/Rust/rust-master/src/librustc/ty/context.rs:1330
+             at /home/ariel/Rust/rust-master/src/librustc/infer/mod.rs:375
+             at /home/ariel/Rust/rust-master/src/librustc_mir/borrow_check.rs:62
+  24: rustc::dep_graph::graph::DepGraph::with_task_impl
+             at /home/ariel/Rust/rust-master/src/librustc/ty/maps/plumbing.rs:370
+             at /home/ariel/Rust/rust-master/src/librustc/dep_graph/graph.rs:273
+  25: rustc::ty::maps::<impl rustc::ty::maps::queries::mir_borrowck<'tcx>>::force
+             at /home/ariel/Rust/rust-master/src/librustc/dep_graph/graph.rs:189
+             at /home/ariel/Rust/rust-master/src/librustc/ty/maps/plumbing.rs:452
+             at /home/ariel/Rust/rust-master/src/librustc_errors/lib.rs:548
+             at /home/ariel/Rust/rust-master/src/librustc/ty/maps/plumbing.rs:445
+             at /home/ariel/Rust/rust-master/src/librustc/ty/maps/plumbing.rs:115
+             at /home/ariel/Rust/rust-master/src/librustc/ty/maps/plumbing.rs:444
+  26: rustc::ty::maps::<impl rustc::ty::maps::queries::mir_borrowck<'tcx>>::try_get
+             at /home/ariel/Rust/rust-master/src/librustc/ty/maps/plumbing.rs:288
+             at /home/ariel/Rust/rust-master/src/librustc/ty/maps/plumbing.rs:486
+  27: rustc::ty::maps::TyCtxtAt::mir_borrowck
+             at /home/ariel/Rust/rust-master/src/librustc/ty/maps/plumbing.rs:525
+  28: rustc::ty::maps::<impl rustc::ty::context::TyCtxt<'a, 'tcx, 'lcx>>::mir_borrowck
+             at /home/ariel/Rust/rust-master/src/librustc/ty/maps/plumbing.rs:518
+  29: rustc_driver::driver::phase_3_run_analysis_passes::{{closure}}::{{closure}}
+             at /home/ariel/Rust/rust-master/src/librustc_driver/driver.rs:1064
+  30: rustc::ty::context::TyCtxt::create_and_enter
+             at /home/ariel/Rust/rust-master/src/librustc/util/common.rs:120
+             at /home/ariel/Rust/rust-master/src/librustc_driver/driver.rs:1062
+             at /home/ariel/Rust/rust-master/src/librustc/ty/context.rs:1522
+             at /home/ariel/Rust/rust-master/src/libstd/thread/local.rs:377
+             at /home/ariel/Rust/rust-master/src/libstd/thread/local.rs:288
+             at /home/ariel/Rust/rust-master/src/librustc/ty/context.rs:1519
+             at /home/ariel/Rust/rust-master/src/librustc/ty/context.rs:1506
+             at /home/ariel/Rust/rust-master/src/libstd/thread/local.rs:377
+             at /home/ariel/Rust/rust-master/src/libstd/thread/local.rs:288
+             at /home/ariel/Rust/rust-master/src/librustc/ty/context.rs:1503
+             at /home/ariel/Rust/rust-master/src/librustc/ty/context.rs:1138
+  31: rustc_driver::driver::compile_input
+             at /home/ariel/Rust/rust-master/src/librustc_driver/driver.rs:1010
+             at /home/ariel/Rust/rust-master/src/librustc_driver/driver.rs:209
+  32: rustc_driver::run_compiler
+             at /home/ariel/Rust/rust-master/src/librustc_driver/lib.rs:253
 
