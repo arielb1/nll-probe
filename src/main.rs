@@ -1,3 +1,4 @@
+
 #![feature(rustc_private)]
 
 #[macro_use] extern crate error_chain;
@@ -248,7 +249,7 @@ fn check_test(cfg: &Configuration,
 
 fn on_suite(cfg: &Configuration, suite: &str) -> Result<()> {
     run_tester(cfg, suite, "ast", "")?;
-    run_tester(cfg, suite, "mir", "-Z borrowck-mir")?;
+    run_tester(cfg, suite, "mir", "-Z borrowck=mir")?;
 
     let mut ignore = String::new();
     let ignore_path = cfg.datadir.join("IGNORE");
@@ -281,7 +282,7 @@ fn run() -> Result<i32> {
     let mut cfg = String::new();
     fs::File::open("nll-probe.toml")?.read_to_string(&mut cfg)?;
     let cfg: Configuration = toml::from_str(&cfg)?;
-//    on_suite(&cfg, "run-pass")?;
+    on_suite(&cfg, "run-pass")?;
     on_suite(&cfg, "compile-fail")?;
     Ok((0))
 }

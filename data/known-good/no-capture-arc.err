@@ -1,26 +1,4 @@
-error[E0382]: use of moved value: `arc_v` (Ast)
-  --> /home/ariel/Rust/rust-master/src/test/compile-fail/no-capture-arc.rs:24:18
-   |
-20 |     thread::spawn(move|| {
-   |                   ------ value moved (into closure) here
-...
-24 |     assert_eq!((*arc_v)[2], 3);
-   |                  ^^^^^ value used here after move
-   |
-   = note: move occurs because `arc_v` has type `std::sync::Arc<std::vec::Vec<i32>>`, which does not implement the `Copy` trait
-
-error[E0382]: use of moved value: `arc_v` (Ast)
-  --> /home/ariel/Rust/rust-master/src/test/compile-fail/no-capture-arc.rs:26:23
-   |
-20 |     thread::spawn(move|| {
-   |                   ------ value moved (into closure) here
-...
-26 |     println!("{:?}", *arc_v);
-   |                       ^^^^^ value used here after move
-   |
-   = note: move occurs because `arc_v` has type `std::sync::Arc<std::vec::Vec<i32>>`, which does not implement the `Copy` trait
-
-error[E0382]: borrow of moved value: `arc_v` (Mir)
+error[E0382]: borrow of moved value: `arc_v`
   --> /home/ariel/Rust/rust-master/src/test/compile-fail/no-capture-arc.rs:24:18
    |
 20 |       thread::spawn(move|| {
@@ -30,9 +8,9 @@ error[E0382]: borrow of moved value: `arc_v` (Mir)
    | |_____- value moved here
 23 | 
 24 |       assert_eq!((*arc_v)[2], 3);
-   |                    ^^^^^ value borrow here after move
+   |                    ^^^^^ value borrowed here after move
 
-error[E0382]: borrow of moved value: `arc_v` (Mir)
+error[E0382]: borrow of moved value: `arc_v`
   --> /home/ariel/Rust/rust-master/src/test/compile-fail/no-capture-arc.rs:26:23
    |
 20 |       thread::spawn(move|| {
@@ -42,7 +20,7 @@ error[E0382]: borrow of moved value: `arc_v` (Mir)
    | |_____- value moved here
 ...
 26 |       println!("{:?}", *arc_v);
-   |                         ^^^^^ value borrow here after move
+   |                         ^^^^^ value borrowed here after move
 
-error: aborting due to 4 previous errors
+error: aborting due to 2 previous errors
 
